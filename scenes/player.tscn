@@ -1,9 +1,13 @@
-[gd_scene load_steps=26 format=3 uid="uid://vv46cbqsvdsc"]
+[gd_scene load_steps=27 format=3 uid="uid://vv46cbqsvdsc"]
 
 [ext_resource type="Texture2D" uid="uid://bl3lw75gf1qi6" path="res://assets/knight.png" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://bl2mxecc7dv8y" path="res://scripts/player.gd" id="1_g2els"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a38lo"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ke2ow"]
 atlas = ExtResource("1_3vyb7")
 region = Rect2(64, 160, 32, 32)
 
@@ -99,6 +103,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_ke2ow")
+}],
+"loop": true,
+"name": &"dash",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_g2els")
 }, {
 "duration": 1.0,
@@ -178,7 +190,7 @@ script = ExtResource("1_g2els")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_tuyoq")
-animation = &"air"
+animation = &"dash"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

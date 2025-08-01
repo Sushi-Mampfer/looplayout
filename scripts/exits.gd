@@ -8,6 +8,8 @@ signal exit(direction)
 @export var bottom = false
 @export var left = false
 
+const EXITS_DELAY = .1
+
 var enabled = false
 
 func _ready() -> void:
@@ -19,7 +21,8 @@ func _ready() -> void:
 		get_node("Bottom/BottomTileMap").enabled = false
 	if left:
 		get_node("Left/LeftTileMap").enabled = false
-	enabled = true
+	
+	get_tree().create_timer(EXITS_DELAY).timeout.connect(enable)
 
 func _on_top_body_entered(body: Node2D) -> void:
 	if body.name == "Player" and enabled:
@@ -39,3 +42,6 @@ func _on_bottom_body_entered(body: Node2D) -> void:
 func _on_left_body_entered(body: Node2D) -> void:
 	if body.name == "Player" and enabled:
 		exit.emit("left")
+
+func enable() -> void:
+	enabled = true

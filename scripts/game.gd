@@ -1,26 +1,62 @@
 extends Node2D
 
 @onready var player: CharacterBody2D = $Player
+@onready var menu: Control = $Menu
+@onready var store: Control = $Store
+@onready var money_label: Label = $Label
 
+var money = 0
 var current_level: Node
+var none: Button
+var wall_jump: Button
+var dash: Button
+var double_jump: Button
+var wall_jump_bought = false
+var dash_bought = false
+var double_jump_bought = false
 var level_matrix_size = 4
 var current_pos = [2, 2]
 var level_matrix = [
 	[" ", " ", " ", " ", " "], 
 	[" ", " ", "2", " ", " "],
-	[" ", " ", "1", " ", " "],
+	[" ", "2", "1", "2", " "],
 	[" ", " ", "2", " ", " "],
 	[" ", " ", " ", " ", " "]
 ]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	load_level("")
+	menu.visible = true
+	menu.get_node("Margin/VBox/Play").pressed.connect(start)
+	menu.get_node("Margin/VBox/Store").pressed.connect(show_store)
+	
+	store.get_node("Margin/VBox/Back").pressed.connect(back)
+	none = store.get_node("Margin/VBox/None")
+	wall_jump = store.get_node("Margin/VBox/WallJump")
+	dash = store.get_node("Margin/VBox/Dash")
+	double_jump = store.get_node("Margin/VBox/DoubleJump")
+	
+	none.pressed.connect(none_pressed)
+	wall_jump.pressed.connect(wall_jump_pressed)
+	dash.pressed.connect(dash_pressed)
+	double_jump.pressed.connect(double_jump_pressed)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	pass
+	money_label.text = str(money)
+	if money > 9 and not wall_jump_bought:
+		wall_jump.disabled = false
+	elif money < 10 and not wall_jump_bought:
+		wall_jump.disabled = true
+	if money > 99 and not dash_bought:
+		dash.disabled = false
+	elif money < 100 and not dash_bought:
+		dash.disabled = true
+	if money > 999 and not double_jump_bought:
+		double_jump.disabled = false
+	elif money < 1000 and not double_jump_bought:
+		double_jump.disabled = true
 
 func load_level(side: String) -> void:
 	if current_level:
@@ -85,35 +121,99 @@ func load_level(side: String) -> void:
 			player.position = current_level.left
 		_:
 			player.position = current_level.default
+		
+	player.velocity = Vector2(0, 0)
 	
-	add_child(current_level)
+	get_tree().current_scene.call_deferred("add_child", current_level)
 
-func level_finished() -> void:
-	print("finished")
+func level_finished(prize: int) -> void:
+	money += prize
+	current_level.queue_free()
+	current_level = null
+	menu.visible = true
 
 func exit(direction: String) -> void:
 	match direction:
 		"top":
 			if current_pos[0] > 0 and level_matrix[current_pos[0] - 1][current_pos[1]] != " ":
 				current_pos[0] -= 1
-				player.velocity.y = 0
-				player.velocity.x = 0
+				player.velocity = Vector2(0, 0)
 				load_level("bottom")
 		"right":
 			if current_pos[1] < level_matrix_size and level_matrix[current_pos[0]][current_pos[1] + 1] != " ":
 				current_pos[1] += 1
-				player.velocity.y = 0
-				player.velocity.x = 0
+				player.velocity = Vector2(0, 0)
 				load_level("left")
 		"bottom":
 			if current_pos[0] < level_matrix_size and level_matrix[current_pos[0] + 1][current_pos[1]] != " ":
 				current_pos[0] += 1
-				player.velocity.y = 0
-				player.velocity.x = 0
+				player.velocity = Vector2(0, 0)
 				load_level("top")
 		"left":
 			if current_pos[1] > 0 and level_matrix[current_pos[0]][current_pos[1] - 1] != " ":
 				current_pos[1] -= 1
-				player.velocity.y = 0
-				player.velocity.x = 0
+				player.velocity = Vector2(0, 0)
 				load_level("right")
+
+func start() -> void:
+	current_pos = [2, 2]
+	menu.visible = false
+	load_level("")
+
+func show_store() -> void:
+	menu.visible = false
+	store.visible = true
+
+func back() -> void:
+	store.visible = false
+	menu.visible = true
+
+func none_pressed() -> void:
+	enable_all()
+	none.disabled = true
+
+func wall_jump_pressed() -> void:
+	if wall_jump_bought:
+		enable_all()
+		wall_jump.disabled = true
+		player.wall_jump = true
+	else:
+		money -= 10
+		wall_jump_bought = true
+		wall_jump.disabled = false
+		wall_jump.text = "Wall Jump"
+
+func dash_pressed() -> void:
+	if dash_bought:
+		enable_all()
+		dash.disabled = true
+		player.dash = true
+	else:
+		money -= 100
+		dash_bought = true
+		dash.disabled = false
+		dash.text = "Dash"
+
+func double_jump_pressed() -> void:
+	if double_jump_bought:
+		enable_all()
+		double_jump.disabled = true
+		player.double_jump = true
+	else:
+		money -= 1000
+		double_jump_bought = true
+		double_jump.disabled = false
+		double_jump.text = "Double Jump"
+
+func enable_all() -> void:
+	none.disabled = false
+	if wall_jump_bought:
+		wall_jump.disabled = false
+	if dash_bought:
+		dash.disabled = false
+	if double_jump_bought:
+		double_jump.disabled = false
+	
+	player.wall_jump = false
+	player.dash = false
+	player.double_jump = false

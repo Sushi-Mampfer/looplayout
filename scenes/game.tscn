@@ -1,7 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://2ry0j8mkvsc"]
+[gd_scene load_steps=9 format=3 uid="uid://2ry0j8mkvsc"]
 
 [ext_resource type="Script" uid="uid://c4q7atdd2btqq" path="res://scripts/game.gd" id="1_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://vv46cbqsvdsc" path="res://scenes/player.tscn" id="1_uwrxv"]
+[ext_resource type="PackedScene" uid="uid://sgapxchmg20w" path="res://scenes/menu.tscn" id="3_lnu2h"]
+[ext_resource type="FontFile" uid="uid://c7dgb1n4s2w62" path="res://fonts/PixelOperator8.ttf" id="4_lbhrr"]
+[ext_resource type="Texture2D" uid="uid://b21h40ywe7l5e" path="res://assets/coin.png" id="5_iywne"]
+[ext_resource type="PackedScene" uid="uid://beiftsd3itiin" path="res://scenes/store.tscn" id="6_p57ef"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p57ef"]
+atlas = ExtResource("5_iywne")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u5sy4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p57ef")
+}],
+"loop": true,
+"name": &"default",
+"speed": 1.0
+}]
 
 [node name="game" type="Node2D"]
 script = ExtResource("1_lbhrr")
@@ -11,3 +30,39 @@ position = Vector2(-138, 145)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)
+
+[node name="Menu" parent="." instance=ExtResource("3_lnu2h")]
+visible = false
+z_index = 15
+offset_left = -288.0
+offset_top = -162.0
+offset_right = 864.0
+offset_bottom = 488.0
+
+[node name="Label" type="Label" parent="."]
+z_index = 20
+offset_left = 242.0
+offset_top = -157.0
+offset_right = 284.0
+offset_bottom = -134.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_lbhrr")
+text = "0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 20
+position = Vector2(231, -147)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_u5sy4")
+autoplay = "default"
+
+[node name="Store" parent="." instance=ExtResource("6_p57ef")]
+visible = false
+z_index = 15
+offset_left = -288.0
+offset_top = -162.0
+offset_right = 864.0
+offset_bottom = 486.0
+scale = Vector2(0.5, 0.5)
