@@ -4,6 +4,23 @@ extends Node2D
 @onready var menu: Control = $Menu
 @onready var store: Control = $Store
 @onready var money_label: Label = $Label
+@onready var layout: Control = $Layout
+
+signal layout_signal(level_matrix, levels)
+
+enum {UNSEEN, SEEN, BEATEN}
+
+var levels = {
+	"1": UNSEEN,
+	"2": UNSEEN,
+	"3": UNSEEN,
+	"4": UNSEEN,
+	"5": UNSEEN,
+	"6": UNSEEN,
+	"7": UNSEEN,
+	"8": UNSEEN,
+	"9": UNSEEN
+}
 
 var money = 0
 var current_level: Node
@@ -18,7 +35,7 @@ var level_matrix_size = 4
 var current_pos = [2, 2]
 var level_matrix = [
 	[" ", " ", " ", " ", " "], 
-	[" ", " ", "2", " ", " "],
+	[" ", " ", "2", "2", " "],
 	[" ", "2", "1", "2", " "],
 	[" ", " ", "2", " ", " "],
 	[" ", " ", " ", " ", " "]
@@ -28,7 +45,11 @@ var level_matrix = [
 func _ready() -> void:
 	menu.visible = true
 	menu.get_node("Margin/VBox/Play").pressed.connect(start)
+	menu.get_node("Margin/VBox/Layout").pressed.connect(show_layout)
 	menu.get_node("Margin/VBox/Store").pressed.connect(show_store)
+	
+	layout.connect("swap_signal", swap)
+	layout.get_node("Margin/VBox/Back").pressed.connect(back)
 	
 	store.get_node("Margin/VBox/Back").pressed.connect(back)
 	none = store.get_node("Margin/VBox/None")
@@ -62,6 +83,8 @@ func load_level(side: String) -> void:
 	if current_level:
 		current_level.queue_free()
 	var id = level_matrix[current_pos[0]][current_pos[1]]
+	if levels[id] == UNSEEN:
+		levels[id] = SEEN
 	
 	current_level = load("res://scenes/levels/" + id + ".tscn").instantiate()
 	
@@ -127,6 +150,8 @@ func load_level(side: String) -> void:
 	get_tree().current_scene.call_deferred("add_child", current_level)
 
 func level_finished(prize: int) -> void:
+	var id = level_matrix[current_pos[0]][current_pos[1]]
+	levels[id] = BEATEN
 	money += prize
 	current_level.queue_free()
 	current_level = null
@@ -164,8 +189,15 @@ func show_store() -> void:
 	menu.visible = false
 	store.visible = true
 
+func show_layout() -> void:
+	menu.visible = false
+	store.visible = false
+	layout.visible = true
+	layout_signal.emit(level_matrix, levels)
+
 func back() -> void:
 	store.visible = false
+	layout.visible = false
 	menu.visible = true
 
 func none_pressed() -> void:
@@ -217,3 +249,8 @@ func enable_all() -> void:
 	player.wall_jump = false
 	player.dash = false
 	player.double_jump = false
+
+func swap(data):
+	var temp = level_matrix[int(data[0])][int(data[1])]
+	level_matrix[int(data[0])][int(data[1])] = level_matrix[int(data[2])][int(data[3])]
+	level_matrix[int(data[2])][int(data[3])] = temp

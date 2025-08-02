@@ -43,7 +43,7 @@ theme_override_font_sizes/font_size = 80
 text = "Play
 "
 
-[node name="Button" type="Button" parent="Margin/VBox"]
+[node name="Layout" type="Button" parent="Margin/VBox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_yqeox")
 theme_override_font_sizes/font_size = 80
