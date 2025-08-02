@@ -26,6 +26,8 @@ func load(level_matrix, levels) -> void:
 				var texture_node = get_node("Margin/VBox/" + str(i) + "/" + str(j) + "/TextureRect")
 				if levels[id] != BEATEN:
 					var overlay = load("res://scenes/overlay.tscn").instantiate()
+					if levels[id] == SEEN:
+						overlay.background = false
 					viewport.add_child(overlay)
 					texture_node.movable = false
 				else:

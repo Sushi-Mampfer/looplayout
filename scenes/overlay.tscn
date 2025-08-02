@@ -1,4 +1,7 @@
-[gd_scene format=3 uid="uid://dm8rv0phorxsh"]
+[gd_scene load_steps=3 format=3 uid="uid://dm8rv0phorxsh"]
+
+[ext_resource type="Texture2D" uid="uid://d23d5tc1uicb" path="res://assets/lock.png" id="1_d607a"]
+[ext_resource type="Script" uid="uid://bst3pwd4yph0a" path="res://scripts/overlay.gd" id="1_r2eog"]
 
 [node name="Overlay" type="Control"]
 layout_mode = 3
@@ -7,8 +10,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_r2eog")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(288, 288)
 layout_mode = 0
 offset_left = 16.0
@@ -16,3 +20,12 @@ offset_top = 16.0
 offset_right = 304.0
 offset_bottom = 304.0
 color = Color(0.423651, 0.423651, 0.423651, 1)
+
+[node name="Lock" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(288, 288)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 304.0
+offset_bottom = 304.0
+texture = ExtResource("1_d607a")

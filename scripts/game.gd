@@ -34,10 +34,10 @@ var double_jump_bought = false
 var level_matrix_size = 4
 var current_pos = [2, 2]
 var level_matrix = [
-	[" ", " ", " ", " ", " "], 
-	[" ", " ", "2", "2", " "],
-	[" ", "2", "1", "2", " "],
-	[" ", " ", "2", " ", " "],
+	[" ", " ", "4", " ", " "], 
+	["5", " ", " ", " ", " "],
+	[" ", " ", "1", "2", "3"],
+	[" ", " ", " ", " ", " "],
 	[" ", " ", " ", " ", " "]
 ]
 
@@ -196,9 +196,12 @@ func show_layout() -> void:
 	layout_signal.emit(level_matrix, levels)
 
 func back() -> void:
-	store.visible = false
-	layout.visible = false
-	menu.visible = true
+	if level_matrix[2][2] == " ":
+		pass
+	else:
+		store.visible = false
+		layout.visible = false
+		menu.visible = true
 
 func none_pressed() -> void:
 	enable_all()
