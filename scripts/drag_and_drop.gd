@@ -22,6 +22,9 @@ func _drop_data(_position, data):
 
 func _get_drag_data(_position):
 	if movable:
+		var preview = load("res://scenes/preview.tscn").instantiate()
+		preview.get_node("TextureRect").texture = texture
+		layout_node.add_child(preview)
 		return [texture, self, get_parent().get_parent().name, get_parent().name]
 	else:
 		return null

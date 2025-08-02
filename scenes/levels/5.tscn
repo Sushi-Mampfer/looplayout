@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=4 uid="uid://l215rxs7e3pv"]
+[gd_scene load_steps=6 format=4 uid="uid://l215rxs7e3pv"]
 
 [ext_resource type="Script" uid="uid://c37oaeg0eoqy8" path="res://scripts/level.gd" id="1_wb7uw"]
 [ext_resource type="TileSet" uid="uid://o3msp0leienr" path="res://assets/tiles.tres" id="2_n313d"]
 [ext_resource type="PackedScene" uid="uid://fu5hgph2mmb8" path="res://scenes/finish.tscn" id="3_klc73"]
 [ext_resource type="PackedScene" uid="uid://k22gr7f4wll1" path="res://scenes/exits.tscn" id="4_ljm8n"]
+[ext_resource type="Script" uid="uid://epeea6rtgu3p" path="res://scripts/win.gd" id="4_n313d"]
 
 [node name="5" type="Node2D"]
 script = ExtResource("1_wb7uw")
@@ -23,7 +24,7 @@ tile_set = ExtResource("2_n313d")
 
 [node name="Finish" parent="." instance=ExtResource("3_klc73")]
 position = Vector2(136, -136)
-prize = 100
+script = ExtResource("4_n313d")
 
 [node name="Exits" parent="." instance=ExtResource("4_ljm8n")]
 bottom = true
