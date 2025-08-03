@@ -34,10 +34,10 @@ var double_jump_bought = false
 var level_matrix_size = 4
 var current_pos = [2, 2]
 var level_matrix = [
-	["5", " ", "4", " ", " "], 
+	[" ", " ", "4", "6", " "], 
 	[" ", " ", " ", " ", " "],
 	[" ", " ", "1", "2", "3"],
-	[" ", " ", " ", " ", " "],
+	[" ", " ", "5", " ", " "],
 	[" ", " ", " ", " ", " "]
 ]
 
@@ -215,8 +215,10 @@ func wall_jump_pressed() -> void:
 	else:
 		money -= 10
 		wall_jump_bought = true
-		wall_jump.disabled = false
 		wall_jump.text = "Wall Jump"
+		enable_all()
+		wall_jump.disabled = true
+		player.wall_jump = true
 
 func dash_pressed() -> void:
 	if dash_bought:
@@ -226,8 +228,10 @@ func dash_pressed() -> void:
 	else:
 		money -= 100
 		dash_bought = true
-		dash.disabled = false
 		dash.text = "Dash"
+		enable_all()
+		dash.disabled = true
+		player.dash = true
 
 func double_jump_pressed() -> void:
 	if double_jump_bought:
@@ -237,8 +241,10 @@ func double_jump_pressed() -> void:
 	else:
 		money -= 1000
 		double_jump_bought = true
-		double_jump.disabled = false
 		double_jump.text = "Double Jump"
+		enable_all()
+		double_jump.disabled = true
+		player.double_jump = true
 
 func enable_all() -> void:
 	none.disabled = false
