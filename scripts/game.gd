@@ -5,6 +5,9 @@ extends Node2D
 @onready var store: Control = $Store
 @onready var money_label: Label = $Label
 @onready var layout: Control = $Layout
+@onready var level_audio: AudioStreamPlayer2D = $LevelAudio
+@onready var upgrade_audio: AudioStreamPlayer2D = $UpgradeAudio
+@onready var reset_audio: AudioStreamPlayer2D = $ResetAudio
 
 signal layout_signal(level_matrix, levels)
 
@@ -28,6 +31,7 @@ var none: Button
 var wall_jump: Button
 var dash: Button
 var double_jump: Button
+var back_button: Button
 var wall_jump_bought = false
 var dash_bought = false
 var double_jump_bought = false
@@ -49,7 +53,8 @@ func _ready() -> void:
 	menu.get_node("Margin/VBox/Store").pressed.connect(show_store)
 	
 	layout.connect("swap_signal", swap)
-	layout.get_node("Margin/VBox/Back").pressed.connect(back)
+	back_button = layout.get_node("Margin/VBox/Back")
+	back_button.pressed.connect(back)
 	
 	store.get_node("Margin/VBox/Back").pressed.connect(back)
 	none = store.get_node("Margin/VBox/None")
@@ -65,6 +70,16 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	if level_matrix[2][2] == " ":
+		back_button.disabled = true
+	else:
+		back_button.disabled = false
+	
+	if Input.is_action_just_pressed("reset"):
+		reset_audio.play()
+		current_level.queue_free()
+		current_level = null
+		menu.visible = true
 	money_label.text = str(money)
 	if money > 9 and not wall_jump_bought:
 		wall_jump.disabled = false
@@ -94,6 +109,8 @@ func load_level(side: String) -> void:
 	if exits.top:
 		if not current_pos[0] > 0:
 			exits.top = false
+		elif level_matrix[current_pos[0] - 1][current_pos[1]] == " ":
+			exits.top = false
 		else:
 			var scene = load("res://scenes/levels/" + level_matrix[current_pos[0] - 1][current_pos[1]] + ".tscn")
 			if not scene:
@@ -103,6 +120,8 @@ func load_level(side: String) -> void:
 	
 	if exits.right:
 		if not current_pos[1] < level_matrix_size:
+			exits.right = false
+		elif level_matrix[current_pos[0]][current_pos[1] + 1] == " ":
 			exits.right = false
 		else:
 			var scene = load("res://scenes/levels/" + level_matrix[current_pos[0]][current_pos[1] + 1] + ".tscn")
@@ -114,6 +133,8 @@ func load_level(side: String) -> void:
 	if exits.bottom:
 		if not current_pos[0] < level_matrix_size:
 			exits.bottom = false
+		elif level_matrix[current_pos[0] + 1][current_pos[1]] == " ":
+			exits.bottom = false
 		else:
 			var scene = load("res://scenes/levels/" + level_matrix[current_pos[0] + 1][current_pos[1]] + ".tscn")
 			if not scene:
@@ -123,6 +144,8 @@ func load_level(side: String) -> void:
 	
 	if exits.left:
 		if not current_pos[1] > 0:
+			exits.left = false
+		elif level_matrix[current_pos[0]][current_pos[1] - 1] == " ":
 			exits.left = false
 		else:
 			var scene = load("res://scenes/levels/" + level_matrix[current_pos[0]][current_pos[1] - 1] + ".tscn")
@@ -150,6 +173,7 @@ func load_level(side: String) -> void:
 	get_tree().current_scene.call_deferred("add_child", current_level)
 
 func level_finished(prize: int) -> void:
+	level_audio.play()
 	var id = level_matrix[current_pos[0]][current_pos[1]]
 	levels[id] = BEATEN
 	money += prize
@@ -208,6 +232,7 @@ func none_pressed() -> void:
 	none.disabled = true
 
 func wall_jump_pressed() -> void:
+	upgrade_audio.play()
 	if wall_jump_bought:
 		enable_all()
 		wall_jump.disabled = true
@@ -221,6 +246,7 @@ func wall_jump_pressed() -> void:
 		player.wall_jump = true
 
 func dash_pressed() -> void:
+	upgrade_audio.play()
 	if dash_bought:
 		enable_all()
 		dash.disabled = true
@@ -234,6 +260,7 @@ func dash_pressed() -> void:
 		player.dash = true
 
 func double_jump_pressed() -> void:
+	upgrade_audio.play()
 	if double_jump_bought:
 		enable_all()
 		double_jump.disabled = true

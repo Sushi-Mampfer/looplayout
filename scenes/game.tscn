@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://2ry0j8mkvsc"]
+[gd_scene load_steps=13 format=3 uid="uid://2ry0j8mkvsc"]
 
 [ext_resource type="Script" uid="uid://c4q7atdd2btqq" path="res://scripts/game.gd" id="1_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://vv46cbqsvdsc" path="res://scenes/player.tscn" id="1_uwrxv"]
@@ -7,6 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://b21h40ywe7l5e" path="res://assets/coin.png" id="5_iywne"]
 [ext_resource type="PackedScene" uid="uid://beiftsd3itiin" path="res://scenes/store.tscn" id="6_p57ef"]
 [ext_resource type="PackedScene" uid="uid://o4hvi38pwk4v" path="res://scenes/layout.tscn" id="7_u5sy4"]
+[ext_resource type="AudioStream" uid="uid://ctuys50jnl8y1" path="res://sounds/coin.wav" id="8_0tnpc"]
+[ext_resource type="AudioStream" uid="uid://chpvncmlb8ku4" path="res://sounds/power_up.wav" id="9_vtaks"]
+[ext_resource type="AudioStream" uid="uid://hudkhgf1hkal" path="res://sounds/hurt.wav" id="10_vtaks"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p57ef"]
 atlas = ExtResource("5_iywne")
@@ -78,3 +81,12 @@ offset_top = -163.0
 offset_right = -288.0
 offset_bottom = -163.0
 scale = Vector2(0.5, 0.5)
+
+[node name="LevelAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_0tnpc")
+
+[node name="UpgradeAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_vtaks")
+
+[node name="ResetAudio" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_vtaks")
