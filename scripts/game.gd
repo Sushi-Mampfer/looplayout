@@ -8,6 +8,7 @@ extends Node2D
 @onready var level_audio: AudioStreamPlayer2D = $LevelAudio
 @onready var upgrade_audio: AudioStreamPlayer2D = $UpgradeAudio
 @onready var reset_audio: AudioStreamPlayer2D = $ResetAudio
+@onready var coin_sprite: AnimatedSprite2D = $CoinSprite
 
 signal layout_signal(level_matrix, levels)
 
@@ -31,15 +32,17 @@ var none: Button
 var wall_jump: Button
 var dash: Button
 var double_jump: Button
+var gravity_switch: Button
 var back_button: Button
 var wall_jump_bought = false
 var dash_bought = false
 var double_jump_bought = false
+var gravity_switch_bought = false
 var level_matrix_size = 4
 var current_pos = [2, 2]
 var level_matrix = [
-	[" ", " ", "4", "6", " "], 
-	[" ", " ", " ", " ", " "],
+	[" ", " ", "7", "6", " "], 
+	["4", " ", " ", " ", " "],
 	[" ", " ", "1", "2", "3"],
 	[" ", " ", "5", " ", " "],
 	[" ", " ", " ", " ", " "]
@@ -61,11 +64,13 @@ func _ready() -> void:
 	wall_jump = store.get_node("Margin/VBox/WallJump")
 	dash = store.get_node("Margin/VBox/Dash")
 	double_jump = store.get_node("Margin/VBox/DoubleJump")
+	gravity_switch = store.get_node("Margin/VBox/GravitySwitch")
 	
 	none.pressed.connect(none_pressed)
 	wall_jump.pressed.connect(wall_jump_pressed)
 	dash.pressed.connect(dash_pressed)
 	double_jump.pressed.connect(double_jump_pressed)
+	gravity_switch.pressed.connect(gravity_switch_pressed)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -81,20 +86,40 @@ func _process(_delta: float) -> void:
 		current_level = null
 		menu.visible = true
 	money_label.text = str(money)
+	
 	if money > 9 and not wall_jump_bought:
 		wall_jump.disabled = false
 	elif money < 10 and not wall_jump_bought:
 		wall_jump.disabled = true
+		
 	if money > 99 and not dash_bought:
 		dash.disabled = false
 	elif money < 100 and not dash_bought:
 		dash.disabled = true
+		
 	if money > 999 and not double_jump_bought:
 		double_jump.disabled = false
 	elif money < 1000 and not double_jump_bought:
 		double_jump.disabled = true
+		
+	if money > 9999 and not gravity_switch_bought:
+		gravity_switch.disabled = false
+	elif money < 10000 and not gravity_switch_bought:
+		gravity_switch.disabled = true
+	
+	if money > 9999:
+		coin_sprite.position.x = 201.0
+	elif money > 999:
+		coin_sprite.position.x = 216.0
+	elif money > 99:
+		coin_sprite.position.x = 230.0
+	elif money > 9:
+		coin_sprite.position.x = 244.0
+	else:
+		coin_sprite.position.x = 258.0
 
 func load_level(side: String) -> void:
+	player.gravity = 1
 	if current_level:
 		current_level.queue_free()
 	var id = level_matrix[current_pos[0]][current_pos[1]]
@@ -169,7 +194,6 @@ func load_level(side: String) -> void:
 			player.position = current_level.default
 		
 	player.velocity = Vector2(0, 0)
-	
 	get_tree().current_scene.call_deferred("add_child", current_level)
 
 func level_finished(prize: int) -> void:
@@ -272,6 +296,20 @@ func double_jump_pressed() -> void:
 		enable_all()
 		double_jump.disabled = true
 		player.double_jump = true
+
+func gravity_switch_pressed() -> void:
+	upgrade_audio.play()
+	if gravity_switch_bought:
+		enable_all()
+		gravity_switch.disabled = true
+		player.gravity_switch = true
+	else:
+		money -= 10000
+		gravity_switch_bought = true
+		gravity_switch.text = "Double Jump"
+		enable_all()
+		gravity_switch.disabled = true
+		player.gravity_switch = true
 
 func enable_all() -> void:
 	none.disabled = false
