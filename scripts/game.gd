@@ -319,10 +319,13 @@ func enable_all() -> void:
 		dash.disabled = false
 	if double_jump_bought:
 		double_jump.disabled = false
+	if gravity_switch_bought:
+		gravity_switch.disabled = false
 	
 	player.wall_jump = false
 	player.dash = false
 	player.double_jump = false
+	player.gravity_switch = false
 
 func swap(data):
 	var temp = level_matrix[int(data[0])][int(data[1])]
