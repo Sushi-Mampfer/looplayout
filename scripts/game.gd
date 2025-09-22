@@ -119,7 +119,6 @@ func _process(_delta: float) -> void:
 		coin_sprite.position.x = 258.0
 
 func load_level(side: String) -> void:
-	player.gravity = 1
 	if current_level:
 		current_level.queue_free()
 	var id = level_matrix[current_pos[0]][current_pos[1]]
@@ -306,7 +305,7 @@ func gravity_switch_pressed() -> void:
 	else:
 		money -= 10000
 		gravity_switch_bought = true
-		gravity_switch.text = "Double Jump"
+		gravity_switch.text = "Gravity Switch"
 		enable_all()
 		gravity_switch.disabled = true
 		player.gravity_switch = true

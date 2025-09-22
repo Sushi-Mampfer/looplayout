@@ -38,10 +38,8 @@ func _physics_process(delta: float) -> void:
 	
 	if gravity == 1:
 		animated_sprite.position.y = -12
-		animated_sprite.flip_h = false
 	else:
 		animated_sprite.position.y = -3
-		animated_sprite.flip_h = true
 	
 	if wall_jump:
 		if is_on_wall():
